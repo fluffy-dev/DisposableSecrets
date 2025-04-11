@@ -17,3 +17,11 @@ class SecretDeleteDTO(BaseModel):
 
 class DeleteResponseDTO(BaseModel):
     status: str
+
+class SecretLogDTO(BaseModel):
+    id: int
+    secret_key: str
+    action: str
+    ip_address: str
+    ttl_seconds: int
+    passphrase_used: str
