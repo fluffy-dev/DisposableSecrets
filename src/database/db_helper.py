@@ -14,8 +14,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncEngine,
 )
 
-# Use absolute imports
-from src.core.config import settings
+from src.database.settings import settings
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ class DatabaseHelper:
             autoflush=False,
             autocommit=False,
             expire_on_commit=False,
-            class_=AsyncSession, # Ensure it uses AsyncSession
+            class_=AsyncSession
         )
         logger.debug("Async session factory configured.")
 
@@ -96,10 +95,9 @@ class DatabaseHelper:
             await session.close()
             logger.debug(f"Session {id(session)} closed.")
 
-    # This generator is intended for use with FastAPI's Depends
-    async def get_session_dependency(self) -> AsyncGenerator[AsyncSession, None]:
+    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
         """
-        Provides an AsyncSession as a FastAPI dependency.
+        Provides an AsyncSession
 
         Ensures the session is closed after the request.
         Rollback/commit logic should be handled elsewhere (e.g., middleware or endpoint).
@@ -111,24 +109,20 @@ class DatabaseHelper:
         logger.debug(f"Session {id(session)} created for dependency.")
         try:
             yield session
+        except SQLAlchemyError:
+            logger.warning(f"Session {id(session)} rollback because of SQLAlchemyError.")
+            await session.rollback()
+            raise
         finally:
             await session.close()
             logger.debug(f"Session {id(session)} closed by dependency.")
 
-
-# --- Global Instance ---
-# Initialize the helper using settings from the core config
-# Ensure settings.DATABASE_URL is correctly formed (e.g., in core/config.py)
 try:
     db_helper = DatabaseHelper(
-        url=str(settings.DATABASE_URL), # Ensure it's a string
-        echo=settings.DB_ECHO_LOG # Assuming DB_ECHO_LOG is defined in settings
+        url=str(settings.DATABASE_URL),
+        echo=settings.DB_ECHO_LOG
     )
     logger.info("DatabaseHelper instance created successfully.")
-except AttributeError:
-    logger.error("DB_ECHO_LOG setting not found. Defaulting to False.")
-    db_helper = DatabaseHelper(url=str(settings.DATABASE_URL), echo=False)
 except Exception as e:
      logger.critical(f"Failed to initialize DatabaseHelper. Application might not work correctly. Error: {e}", exc_info=True)
-     # Depending on the application, you might want to exit here or handle it differently
-     db_helper = None # Or a dummy object
+     db_helper = None
