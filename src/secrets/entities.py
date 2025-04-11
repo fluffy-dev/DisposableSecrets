@@ -4,7 +4,7 @@ from uuid import UUID
 from typing import Optional
 
 @dataclass
-class Secret:
+class SecretEntity:
     key: UUID
     value: str
     passphrase: Optional[str]
