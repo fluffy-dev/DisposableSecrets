@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = Field(..., alias="DB_PASSWORD")
     DB_NAME: str = Field("secrets_db", alias="DB_NAME")
 
-    DB_ECHO_LOG: bool = Field(False, description="If True, SQLAlchemy logs SQL queries", alias="DB_ECHO_LOG")
+    DB_ECHO_LOG: bool = Field(True, description="If True, SQLAlchemy logs SQL queries", alias="DB_ECHO_LOG")
     DB_RUN_AUTO_MIGRATE: bool = Field(False, alias="DB_RUN_AUTO_MIGRATE")
 
     @computed_field(return_type=PostgresDsn)

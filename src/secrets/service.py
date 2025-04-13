@@ -1,5 +1,4 @@
 from uuid import uuid4
-from datetime import datetime
 from src.cache.client import IClient
 from src.secrets.entities import SecretEntity, SecretLogEntity
 from src.secrets.dependencies import ISecretRepository

@@ -8,7 +8,7 @@ from src.secrets.dto import (
 router = APIRouter(prefix="/secrets", tags=["secrets"])
 
 @router.post("/secret", response_model=SecretResponseDTO, status_code=201)
-async def create_secret(secret_data: SecretCreateDTO, service: ISecretService, response: Response, request: Request,):
+async def create_secret(secret_data: SecretCreateDTO, service: ISecretService, response: Response, request: Request):
     response.headers.update({
         "Cache-Control": "no-cache, no-store, must-revalidate",
         "Pragma": "no-cache",
@@ -23,7 +23,7 @@ async def get_secret(
     secret_key: str,
     service: ISecretService,
     response: Response,
-    request: Request,
+    request: Request
 ):
     response.headers.update({
         "Cache-Control": "no-cache, no-store, must-revalidate",

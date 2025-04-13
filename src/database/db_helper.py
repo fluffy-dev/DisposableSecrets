@@ -117,12 +117,8 @@ class DatabaseHelper:
             await session.close()
             logger.debug(f"Session {id(session)} closed by dependency.")
 
-try:
-    db_helper = DatabaseHelper(
-        url=str(settings.DATABASE_URL),
-        echo=settings.DB_ECHO_LOG
-    )
-    logger.info("DatabaseHelper instance created successfully.")
-except Exception as e:
-     logger.critical(f"Failed to initialize DatabaseHelper. Application might not work correctly. Error: {e}", exc_info=True)
-     db_helper = None
+
+db_helper = DatabaseHelper(
+    url=str(settings.database_url),
+    echo=settings.DB_ECHO_LOG
+)

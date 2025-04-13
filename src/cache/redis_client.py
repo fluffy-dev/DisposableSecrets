@@ -2,7 +2,7 @@ from typing import Any
 import json
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
-from src.cache.config import settings as redis_settings
+from src.cache.settings import settings as redis_settings
 from src.cache.exceptions import CacheConnectionError
 from src.cache.interface import CacheClientInterface
 
@@ -98,7 +98,7 @@ class RedisCacheClient(CacheClientInterface):
             return None
 
 
-_cache_client = RedisCacheClient(str(redis_settings.redis_url)) if redis_settings.redis_url else None
+_cache_client = RedisCacheClient(str(redis_settings.redis_url))
 
 
 def get_cache_client() -> RedisCacheClient:
